@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <title>tabsaver</title>
+  <style>
+    body {
+      width: 320px;
+      padding: 12px;
+      font-family: monospace;
+      font-size: 13px;
+    }
+
+    h1 {
+      font-size: 15px;
+      margin: 0 0 12px 0;
+    }
+
+    #tab-list {
+      list-style: none;
+      padding: 0;
+      margin: 0;
+    }
+
+    #tab-list li {
+      padding: 4px 0;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+  </style>
+</head>
+<body>
+  <h1>tabsaver</h1>
+  <ul id="tab-list"></ul>
+  <script src="popup.js"></script>
+</body>
+</html>
