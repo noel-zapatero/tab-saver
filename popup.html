@@ -1,38 +1,71 @@
 <!DOCTYPE html>
 <html lang="es">
+
 <head>
-  <meta charset="UTF-8" />
-  <title>tabsaver</title>
-  <style>
-    body {
-      width: 320px;
-      padding: 12px;
-      font-family: monospace;
-      font-size: 13px;
-    }
+    <meta charset="UTF-8" />
+    <title>tabsaver</title>
+    <style>
+        body {
+            width: 320px;
+            padding: 12px;
+            font-family: monospace;
+            font-size: 13px;
+        }
 
-    h1 {
-      font-size: 15px;
-      margin: 0 0 12px 0;
-    }
+        h1 {
+            font-size: 15px;
+            margin: 0 0 12px 0;
+        }
 
-    #tab-list {
-      list-style: none;
-      padding: 0;
-      margin: 0;
-    }
+        .save-row {
+            display: flex;
+            gap: 6px;
+            margin-bottom: 14px;
+        }
 
-    #tab-list li {
-      padding: 4px 0;
-      white-space: nowrap;
-      overflow: hidden;
-      text-overflow: ellipsis;
-    }
-  </style>
+        .save-row input {
+            flex: 1;
+            padding: 5px 7px;
+            font-family: monospace;
+            font-size: 12px;
+            border: 1px solid #ccc;
+        }
+
+        .save-row button {
+            padding: 5px 10px;
+            font-family: monospace;
+            font-size: 12px;
+            cursor: pointer;
+        }
+
+        #tab-list {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+
+        #tab-list li {
+            padding: 4px 0;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            color: #555;
+        }
+    </style>
 </head>
+
 <body>
-  <h1>tabsaver</h1>
-  <ul id="tab-list"></ul>
-  <script src="popup.js"></script>
+    <h1>tabsaver</h1>
+
+    <div class="save-row">
+        <input type="text" id="session-name" placeholder="Nombre de Sesión" />
+        <button id="save-btn">Guardar</button>
+    </div>
+
+    <p style="font-size:11px; color:#888; margin:0 0 6px 0">Pestañas Abiertas:</p>
+    <ul id="tab-list"></ul>
+
+    <script src="popup.js"></script>
 </body>
+
 </html>
