@@ -18,6 +18,49 @@ async function getCurrentTabs() {
     return chrome.tabs.query({ currentWindow: true });
 }
 
+function formatDate(ts) {
+    const d = new Date(ts);
+    return d.toLocaleDateString() + ' ' + d.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+}
+
+function renderSessions() {
+    const sessions = getSessions();
+    const container = document.getElementById('sessions-list');
+    container.innerHTML = '';
+
+    const keys = Object.keys(sessions).sort((a, b) => sessions[b].savedAt - sessions[a].savedAt);
+
+    if (keys.length === 0) {
+        container.innerHTML = '<p style="color:#999;font-size:11px;margin:0">sin sesiones guardadas</p>';
+        return;
+    }
+
+    for (const key of keys) {
+        const s = sessions[key];
+        const row = document.createElement('div');
+        row.className = 'session-row';
+
+        const info = document.createElement('div');
+        info.className = 'session-info';
+        info.innerHTML = `<span class="session-name">${s.name}</span><span class="session-meta">${s.tabs.length} pestañas · ${formatDate(s.savedAt)}</span>`;
+
+        const deleteBtn = document.createElement('button');
+        deleteBtn.textContent = '×';
+        deleteBtn.className = 'delete-btn';
+        deleteBtn.title = 'eliminar sesión';
+        deleteBtn.addEventListener('click', () => {
+            const all = getSessions();
+            delete all[key];
+            saveSessions(all);
+            renderSessions();
+        });
+
+        row.appendChild(info);
+        row.appendChild(deleteBtn);
+        container.appendChild(row);
+    }
+}
+
 async function loadCurrentTabs() {
     const tabs = await getCurrentTabs();
     const list = document.getElementById('tab-list');
@@ -46,9 +89,7 @@ async function saveSession() {
 
     saveSessions(sessions);
     nameInput.value = '';
-
-    // TODO: actualizar la lista de sesiones despues de guardar
-    alert(`sesión "${name}" guardada con ${tabs.length} pestañas`);
+    renderSessions();
 }
 
 document.getElementById('save-btn').addEventListener('click', saveSession);
@@ -58,3 +99,4 @@ document.getElementById('session-name').addEventListener('keydown', e => {
 });
 
 loadCurrentTabs();
+renderSessions();

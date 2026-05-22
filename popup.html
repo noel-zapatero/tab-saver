@@ -20,7 +20,7 @@
         .save-row {
             display: flex;
             gap: 6px;
-            margin-bottom: 14px;
+            margin-bottom: 16px;
         }
 
         .save-row input {
@@ -38,6 +38,64 @@
             cursor: pointer;
         }
 
+        .section-label {
+            font-size: 11px;
+            color: #888;
+            margin: 0 0 6px 0;
+        }
+
+        .session-row {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 6px 0;
+            border-bottom: 1px solid #eee;
+        }
+
+        .session-row:last-child {
+            border-bottom: none;
+        }
+
+        .session-info {
+            display: flex;
+            flex-direction: column;
+            gap: 2px;
+            overflow: hidden;
+        }
+
+        .session-name {
+            font-weight: bold;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .session-meta {
+            font-size: 11px;
+            color: #999;
+        }
+
+        .delete-btn {
+            background: none;
+            border: none;
+            color: #bbb;
+            font-size: 16px;
+            cursor: pointer;
+            padding: 0 4px;
+            line-height: 1;
+            flex-shrink: 0;
+        }
+
+        .delete-btn:hover {
+            color: #e00;
+        }
+
+        hr {
+            border: none;
+            border-top: 1px solid #eee;
+            margin: 14px 0;
+        }
+
         #tab-list {
             list-style: none;
             padding: 0;
@@ -45,11 +103,12 @@
         }
 
         #tab-list li {
-            padding: 4px 0;
+            padding: 3px 0;
             white-space: nowrap;
             overflow: hidden;
             text-overflow: ellipsis;
             color: #555;
+            font-size: 11px;
         }
     </style>
 </head>
@@ -62,7 +121,12 @@
         <button id="save-btn">Guardar</button>
     </div>
 
-    <p style="font-size:11px; color:#888; margin:0 0 6px 0">Pestañas Abiertas:</p>
+    <p class="section-label">Sesiones Guardadas:</p>
+    <div id="sessions-list"></div>
+
+    <hr />
+
+    <p class="section-label">Pestañas Abiertas:</p>
     <ul id="tab-list"></ul>
 
     <script src="popup.js"></script>
