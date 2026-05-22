@@ -23,6 +23,12 @@ function formatDate(ts) {
     return d.toLocaleDateString() + ' ' + d.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
 }
 
+async function restoreSession(session) {
+    const urls = session.tabs.map(t => t.url).filter(Boolean);
+    if (urls.length === 0) return;
+    await chrome.windows.create({ url: urls });
+}
+
 function renderSessions() {
     const sessions = getSessions();
     const container = document.getElementById('sessions-list');
@@ -44,9 +50,18 @@ function renderSessions() {
         info.className = 'session-info';
         info.innerHTML = `<span class="session-name">${s.name}</span><span class="session-meta">${s.tabs.length} pestañas · ${formatDate(s.savedAt)}</span>`;
 
+        const actions = document.createElement('div');
+        actions.className = 'session-actions';
+
+        const restoreBtn = document.createElement('button');
+        restoreBtn.textContent = '↗';
+        restoreBtn.className = 'icon-btn';
+        restoreBtn.title = 'restaurar en nueva ventana';
+        restoreBtn.addEventListener('click', () => restoreSession(s));
+
         const deleteBtn = document.createElement('button');
         deleteBtn.textContent = '×';
-        deleteBtn.className = 'delete-btn';
+        deleteBtn.className = 'icon-btn delete-btn';
         deleteBtn.title = 'eliminar sesión';
         deleteBtn.addEventListener('click', () => {
             const all = getSessions();
@@ -55,8 +70,10 @@ function renderSessions() {
             renderSessions();
         });
 
+        actions.appendChild(restoreBtn);
+        actions.appendChild(deleteBtn);
         row.appendChild(info);
-        row.appendChild(deleteBtn);
+        row.appendChild(actions);
         container.appendChild(row);
     }
 }
