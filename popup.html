@@ -144,6 +144,27 @@
             border-color: #e00;
             background: #fff5f5;
         }
+
+        .io-row {
+            display: flex;
+            gap: 6px;
+            margin-top: 10px;
+        }
+
+        .io-row button, .io-label {
+            font-family: monospace;
+            font-size: 11px;
+            padding: 4px 8px;
+            border: 1px solid #ccc;
+            background: #fafafa;
+            cursor: pointer;
+            border-radius: 3px;
+            color: #444;
+        }
+
+        .io-row button:hover, .io-label:hover {
+            background: #f0f0f0;
+        }
     </style>
 </head>
 
@@ -157,7 +178,12 @@
 
     <p class="section-label">Sesiones Guardadas:</p>
     <div id="sessions-list"></div>
-
+    <div class="io-row">
+        <button class="btn" id="export-btn">Exportar JSON</button>
+        <label class="io-label"> Importar JSON
+            <input type="file" id="import-input" accept=".json" style="display:none" />
+        </label>
+    </div>
     <hr />
 
     <p class="section-label">Pestañas Abiertas:</p>

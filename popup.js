@@ -25,7 +25,9 @@ function formatDate(ts) {
 
 async function restoreSession(session) {
     const urls = session.tabs.map(t => t.url).filter(Boolean);
-    if (urls.length === 0) return;
+    if (urls.length === 0) {
+        return
+    };
     await chrome.windows.create({ url: urls });
 }
 
@@ -37,7 +39,7 @@ function renderSessions() {
     const keys = Object.keys(sessions).sort((a, b) => sessions[b].savedAt - sessions[a].savedAt);
 
     if (keys.length === 0) {
-        container.innerHTML = '<p style="color:#999;font-size:11px;margin:0">sin sesiones guardadas</p>';
+        container.innerHTML = '<p style="color:#999;font-size:11px;margin:0">Sin sesiones guardadas.</p>';
         return;
     }
 
@@ -56,13 +58,13 @@ function renderSessions() {
         const restoreBtn = document.createElement('button');
         restoreBtn.textContent = '↗';
         restoreBtn.className = 'icon-btn';
-        restoreBtn.title = 'restaurar en nueva ventana';
+        restoreBtn.title = 'Restaurar en nueva ventana';
         restoreBtn.addEventListener('click', () => restoreSession(s));
 
         const deleteBtn = document.createElement('button');
         deleteBtn.textContent = '×';
         deleteBtn.className = 'icon-btn delete-btn';
-        deleteBtn.title = 'eliminar sesión';
+        deleteBtn.title = 'Eliminar sesión';
         deleteBtn.addEventListener('click', () => {
             const all = getSessions();
             delete all[key];
@@ -109,11 +111,59 @@ async function saveSession() {
     renderSessions();
 }
 
+function exportSessions() {
+    const sessions = getSessions();
+    const blob = new Blob([JSON.stringify(sessions, null, 2)], { type: 'application/json' });
+    const url = URL.createObjectURL(blob);
+
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = 'tabsaver-export.json';
+    a.click();
+
+    URL.revokeObjectURL(url);
+}
+
+function importSessions(file) {
+    const reader = new FileReader();
+    reader.onload = e => {
+        try {
+            const importedRes = JSON.parse(e.target.result);
+
+            // chequeo basico de formato
+            for (const key of Object.keys(importedRes)) {
+                if (!importedRes[key].name || !Array.isArray(importedRes[key].tabs)) {
+                    throw new Error('formato invalido');
+                }
+            }
+
+            const existing = getSessions();
+            const merged = { ...existing, ...importedRes };
+            saveSessions(merged);
+            renderSessions();
+        } catch {
+            alert('error al importar: el archivo parece estar mal formado');
+        }
+    };
+    reader.readAsText(file);
+}
+
+
+//----Event Listeners------//
 document.getElementById('save-btn').addEventListener('click', saveSession);
 
 document.getElementById('session-name').addEventListener('keydown', e => {
     if (e.key === 'Enter') saveSession();
 });
 
+document.getElementById('export-btn').addEventListener('click', exportSessions);
+
+document.getElementById('import-input').addEventListener('change', e => {
+    const file = e.target.files[0];
+    if (file) importSessions(file);
+    e.target.value = '';
+});
+
+//-----------------------//
 loadCurrentTabs();
 renderSessions();
