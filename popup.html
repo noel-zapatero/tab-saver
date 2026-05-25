@@ -5,43 +5,99 @@
     <meta charset="UTF-8" />
     <title>tabsaver</title>
     <style>
-        body {
-            width: 320px;
-            padding: 12px;
-            font-family: monospace;
-            font-size: 13px;
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
         }
 
-        h1 {
-            font-size: 15px;
-            margin: 0 0 12px 0;
+        body {
+            width: 340px;
+            background: #222121;
+            color: #ffffff;
+            font-family: 'Courier New', Courier, monospace;
+            font-size: 12px;
+        }
+
+        .header {
+            padding: 12px 14px 10px;
+            border-bottom: 1px solid #222;
+            display: flex;
+            align-items: baseline;
+            gap: 8px;
+        }
+
+        .header h1 {
+            font-size: 14px;
+            font-weight: normal;
+            letter-spacing: 0.05em;
+            color: #fff;
+        }
+
+        .header{
+            font-size: 10px;
+            color: #555;
+        }
+
+        .section {
+            padding: 10px 14px;
+        }
+
+        .section+.section {
+            border-top: 1px solid #000000;
+        }
+
+        .section-label {
+            font-size: 10px;
+            color: #ffffff;
+            letter-spacing: 0.08em;
+            text-transform: uppercase;
+            margin-bottom: 8px;
         }
 
         .save-row {
             display: flex;
             gap: 6px;
-            margin-bottom: 16px;
         }
 
         .save-row input {
             flex: 1;
-            padding: 5px 7px;
-            font-family: monospace;
+            padding: 6px 8px;
+            background: #1a1a1a;
+            border: 1px solid #2a2a2a;
+            color: #fffdfd;
+            font-family: inherit;
             font-size: 12px;
-            border: 1px solid #ccc;
+            outline: none;
         }
 
-        .save-row button {
-            padding: 5px 10px;
-            font-family: monospace;
-            font-size: 12px;
+        .save-row input:focus {
+            border-color: #444;
+        }
+
+        .save-row input::placeholder {
+            color: #757575;
+        }
+
+        .btn {
+            padding: 6px 11px;
+            background: #1e1e1e;
+            border: 1px solid #333;
+            color: #bbb;
+            font-family: inherit;
+            font-size: 11px;
             cursor: pointer;
         }
 
-        .section-label {
-            font-size: 11px;
-            color: #888;
-            margin: 0 0 6px 0;
+        .btn:hover {
+            background: #252525;
+            border-color: #555;
+            color: #eee;
+        }
+
+        .sessions-list {
+            display: flex;
+            flex-direction: column;
         }
 
         .session-row {
@@ -49,7 +105,7 @@
             align-items: center;
             justify-content: space-between;
             padding: 6px 0;
-            border-bottom: 1px solid #eee;
+            border-bottom: 1px solid #1a1a1a;
         }
 
         .session-row:last-child {
@@ -61,133 +117,129 @@
             flex-direction: column;
             gap: 2px;
             overflow: hidden;
+            flex: 1;
         }
 
         .session-name {
-            font-weight: bold;
+            color: #ffffff;
             white-space: nowrap;
             overflow: hidden;
             text-overflow: ellipsis;
         }
 
         .session-meta {
-            font-size: 11px;
-            color: #999;
-        }
-
-        .delete-btn {
-            background: none;
-            border: none;
-            color: #bbb;
-            font-size: 16px;
-            cursor: pointer;
-            padding: 0 4px;
-            line-height: 1;
-            flex-shrink: 0;
-        }
-
-        .delete-btn:hover {
-            color: #e00;
-        }
-
-        hr {
-            border: none;
-            border-top: 1px solid #eee;
-            margin: 14px 0;
-        }
-
-        #tab-list {
-            list-style: none;
-            padding: 0;
-            margin: 0;
-        }
-
-        #tab-list li {
-            padding: 3px 0;
-            white-space: nowrap;
-            overflow: hidden;
-            text-overflow: ellipsis;
-            color: #555;
-            font-size: 11px;
-        }
-
-        .session-info {
-            flex: 1;
-            /* override the previous version that was missing this */
+            font-size: 10px;
+            color: #33ff00;
         }
 
         .session-actions {
             display: flex;
             gap: 4px;
             flex-shrink: 0;
-            margin-left: 8px;
+            margin-left: 10px;
         }
 
         .icon-btn {
             background: none;
-            border: 1px solid #ddd;
-            color: #666;
-            font-size: 13px;
+            border: 1px solid #2a2a2a;
+            color: #555;
+            font-size: 12px;
             cursor: pointer;
-            padding: 2px 6px;
-            border-radius: 3px;
-            line-height: 1.4;
+            padding: 2px 7px;
+            font-family: inherit;
+            line-height: 1.5;
         }
 
         .icon-btn:hover {
-            background: #f5f5f5;
-            border-color: #bbb;
+            border-color: #2701b4;
+            color: #1900ff;
+            background: #1a1a1a;
         }
 
         .icon-btn.delete-btn:hover {
-            color: #e00;
-            border-color: #e00;
-            background: #fff5f5;
+            color: #cc3333;
+            border-color: #551111;
+        }
+
+        .empty-msg {
+            color: #333;
+            font-size: 11px;
+            padding: 4px 0;
         }
 
         .io-row {
             display: flex;
             gap: 6px;
-            margin-top: 10px;
+            margin-top: 8px;
         }
 
-        .io-row button, .io-label {
-            font-family: monospace;
+        .io-label {
+            padding: 5px 10px;
+            background: #1a1a1a;
+            border: 1px solid #2a2a2a;
+            color: #555;
+            font-family: inherit;
             font-size: 11px;
-            padding: 4px 8px;
-            border: 1px solid #ccc;
-            background: #fafafa;
             cursor: pointer;
-            border-radius: 3px;
-            color: #444;
         }
 
-        .io-row button:hover, .io-label:hover {
-            background: #f0f0f0;
+        .io-label:hover {
+            background: #222;
+            border-color: #444;
+            color: #999;
+        }
+
+        .tabs-list {
+            list-style: none;
+            display: flex;
+            flex-direction: column;
+            gap: 2px;
+        }
+
+        .tabs-list li {
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            color: #c4c4c4;
+            font-size: 11px;
+            padding: 1px 0;
+        }
+
+        .btn:disabled {
+            opacity: 0.35;
+            cursor: not-allowed;
         }
     </style>
 </head>
 
 <body>
-    <h1>tabsaver</h1>
-
-    <div class="save-row">
-        <input type="text" id="session-name" placeholder="Nombre de Sesión" />
-        <button id="save-btn">Guardar</button>
+    <div class="header">
+        <h1>TabSaver</h1>
     </div>
 
-    <p class="section-label">Sesiones Guardadas:</p>
-    <div id="sessions-list"></div>
-    <div class="io-row">
-        <button class="btn" id="export-btn">Exportar JSON</button>
-        <label class="io-label"> Importar JSON
-            <input type="file" id="import-input" accept=".json" style="display:none" />
-        </label>
+    <div class="section">
+        <div class="save-row">
+            <input type="text" id="session-name" placeholder="Nombre de Sesión" />
+            <button class="btn" id="save-btn">Guardar</button>
+        </div>
     </div>
-    <hr />
 
-    <p class="section-label">Pestañas Abiertas:</p>
-    <ul id="tab-list"></ul>
+    <div class="section">
+        <div class="section-label">Sesiones</div>
+        <div class="sessions-list" id="sessions-list"></div>
+        <div class="io-row">
+            <button class="btn" id="export-btn" disbaled>Exportar</button>
+            <label class="btn">
+                Importar
+                <input type="file" id="import-input" accept=".json" style="display:none" />
+            </label>
+        </div>
+    </div>
+
+    <div class="section">
+        <div class="section-label">Pestañas Abiertas</div>
+        <ul class="tabs-list" id="tab-list"></ul>
+    </div>
 
     <script src="popup.js"></script>
 </body>

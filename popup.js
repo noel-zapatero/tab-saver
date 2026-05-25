@@ -27,21 +27,25 @@ async function restoreSession(session) {
     const urls = session.tabs.map(t => t.url).filter(Boolean);
     if (urls.length === 0) {
         return
-    };
+    }
     await chrome.windows.create({ url: urls });
 }
 
 function renderSessions() {
     const sessions = getSessions();
     const container = document.getElementById('sessions-list');
+    const exportBtn = document.getElementById('export-btn');
     container.innerHTML = '';
 
     const keys = Object.keys(sessions).sort((a, b) => sessions[b].savedAt - sessions[a].savedAt);
 
     if (keys.length === 0) {
         container.innerHTML = '<p style="color:#999;font-size:11px;margin:0">Sin sesiones guardadas.</p>';
+        exportBtn.disabled = true;
         return;
     }
+
+    exportBtn.disabled = false;
 
     for (const key of keys) {
         const s = sessions[key];
